@@ -1,6 +1,6 @@
 # Numpang - File Sharing Sementara
 
-Aplikasi web sederhana untuk berbagi file secara sementara. File yang diupload akan otomatis terhapus setelah 30 menit.
+Aplikasi web sederhana untuk berbagi file secara sementara.
 
 ## Fitur
 
