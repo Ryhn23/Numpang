@@ -14,44 +14,98 @@ Aplikasi web sederhana untuk berbagi file secara sementara. File yang diupload a
 
 - Python 3.7 atau lebih baru
 - pip (Python package manager)
+- cPanel dengan akses SSH
 
-## Instalasi
+## Deployment di cPanel
 
-1. Clone repository ini
-2. Buat virtual environment (opsional tapi direkomendasikan):
+### 1. Setup Git di cPanel
+
+1. Buka cPanel dan masuk ke "Git Version Control"
+2. Klik "Create"
+3. Isi form dengan:
+   - Repository Name: numpang
+   - Repository Path: pilih direktori website Anda
+   - Clone URL: URL repository Git Anda
+4. Klik "Create"
+
+### 2. Setup Python di cPanel
+
+1. Buka "Setup Python App" di cPanel
+2. Klik "Create Application"
+3. Isi form dengan:
+   - Python Version: 3.9 atau lebih baru
+   - Application Root: direktori website Anda
+   - Application URL: domain/subdomain Anda
+   - Application Startup File: passenger_wsgi.py
+   - Application Entry point: application
+4. Klik "Create"
+
+### 3. Setup Environment
+
+1. Copy `.env.example` ke `.env`:
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # Linux/Mac
-   # atau
-   venv\Scripts\activate  # Windows
+   cp .env.example .env
    ```
-3. Install dependensi:
+2. Edit `.env` dan set SECRET_KEY dengan nilai yang aman
+
+### 4. Setup Git Hooks
+
+1. Buat file `post-receive` di folder `.git/hooks/`:
    ```bash
-   pip install -r requirements.txt
+   cd .git/hooks/
+   touch post-receive
+   chmod +x post-receive
    ```
 
-## Menjalankan Aplikasi
-
-1. Pastikan virtual environment aktif (jika menggunakan)
-2. Jalankan aplikasi:
+2. Isi file `post-receive` dengan:
    ```bash
-   python app.py
+   #!/bin/bash
+   cd /path/to/your/website
+   ./deploy.sh
    ```
-3. Buka browser dan akses `http://localhost:5000`
 
-## Penggunaan
+### 5. Push ke Repository
 
-1. Buka aplikasi di browser
-2. Drag & drop file atau klik area upload untuk memilih file
-3. Tunggu hingga upload selesai
-4. Salin link download yang diberikan
-5. Bagikan link tersebut kepada orang yang ingin mengunduh file
+```bash
+git add .
+git commit -m "Initial commit"
+git push origin main
+```
 
-## Catatan
+## Struktur File
 
-- File akan otomatis terhapus setelah 30 menit
-- Maksimal ukuran file adalah 500MB
-- Semua jenis file diperbolehkan
+```
+numpang/
+├── .env                  # Environment variables (tidak di-commit)
+├── .env.example         # Template environment variables
+├── .gitignore          # Git ignore rules
+├── .htaccess           # Apache configuration
+├── app.py              # Main application
+├── deploy.sh           # Deployment script
+├── passenger_wsgi.py   # cPanel WSGI configuration
+├── requirements.txt    # Python dependencies
+├── uploads/            # Upload directory
+└── templates/          # HTML templates
+    ├── index.html
+    └── success.html
+```
+
+## Troubleshooting
+
+1. **Error 500**
+   - Cek error log di cPanel
+   - Pastikan semua dependencies terinstall
+   - Pastikan permissions benar
+
+2. **Upload Gagal**
+   - Cek ukuran file (max 500MB)
+   - Cek permissions folder uploads
+   - Cek error log
+
+3. **File Tidak Terhapus**
+   - Cek permissions
+   - Cek log file
+   - Pastikan cron job berjalan
 
 ## License
 This project is licensed under the [MIT License](LICENSE).

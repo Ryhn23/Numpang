@@ -1,0 +1,17 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/$CPANEL_USERNAME/public_html/
+    - /bin/cp -R * $DEPLOYPATH
+    - /bin/cp -R .env $DEPLOYPATH
+    - /bin/cp -R .htaccess $DEPLOYPATH
+    - /bin/cp -R passenger_wsgi.py $DEPLOYPATH
+    - /bin/cp -R deploy.sh $DEPLOYPATH
+    - /bin/chmod +x $DEPLOYPATH/deploy.sh
+    - /bin/chmod 755 $DEPLOYPATH/passenger_wsgi.py
+    - /bin/chmod 755 $DEPLOYPATH/app.py
+    - /bin/chmod 644 $DEPLOYPATH/.htaccess
+    - /bin/chmod 600 $DEPLOYPATH/.env
+    - /bin/mkdir -p $DEPLOYPATH/uploads
+    - /bin/chmod 755 $DEPLOYPATH/uploads
+    - /bin/touch $DEPLOYPATH/passenger_wsgi.py 
