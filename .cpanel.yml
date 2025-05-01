@@ -1,0 +1,24 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/u5389241/public_html/numpang
+    - /bin/mkdir -p $DEPLOYPATH
+    - /bin/cp -R app.py $DEPLOYPATH/
+    - /bin/cp -R templates $DEPLOYPATH/
+    - /bin/cp -R requirements.txt $DEPLOYPATH/
+    - /bin/cp -R passenger_wsgi.py $DEPLOYPATH/
+    - /bin/cp -R .htaccess $DEPLOYPATH/
+    - /bin/cp -R deploy.sh $DEPLOYPATH/
+    
+    # Create and set permissions for uploads directory
+    - /bin/mkdir -p $DEPLOYPATH/uploads
+    - /bin/chmod 755 $DEPLOYPATH/uploads
+    
+    # Set correct permissions
+    - /bin/chmod 755 $DEPLOYPATH/passenger_wsgi.py
+    - /bin/chmod 755 $DEPLOYPATH/app.py
+    - /bin/chmod 644 $DEPLOYPATH/.htaccess
+    - /bin/chmod +x $DEPLOYPATH/deploy.sh
+    
+    # Run deployment script
+    - cd $DEPLOYPATH && ./deploy.sh 
