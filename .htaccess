@@ -1,0 +1,24 @@
+AddHandler wsgi-script .py
+Options +ExecCGI
+RewriteEngine On
+
+# Redirect all requests to passenger_wsgi.py
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ passenger_wsgi.py/$1 [QSA,L]
+
+# Protect uploads directory
+<IfDirectory "uploads">
+    Options -Indexes
+    Require all granted
+</IfDirectory>
+
+# Increase upload limits
+<IfModule mod_php.c>
+    php_value upload_max_filesize 500M
+    php_value post_max_size 500M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+</IfModule>
+
+# Disable directory listing
+Options -Indexes 
