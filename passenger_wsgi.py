@@ -1,24 +1,19 @@
 import os
 import sys
 
-# Get cPanel user
-CPANEL_USER = os.path.basename(os.path.expanduser('~'))
+VENV_PATH = "/home/u5389241/virtualenv/public_html/numpang/3.7/bin/python"
+if sys.executable != VENV_PATH:
+    os.execl(VENV_PATH, VENV_PATH, *sys.argv)
 
-# Detect Python version
-PYTHON_VERSION = '.'.join(map(str, sys.version_info[:2]))
+sys.path.append(os.getcwd())
 
-# Build interpreter path
-INTERP = f"/home/{CPANEL_USER}/virtualenv/numpang/{PYTHON_VERSION}/bin/python"
+from app import app as application
 
-if sys.executable != INTERP:
-    os.execl(INTERP, INTERP, *sys.argv)
-
-# Add current directory to path
-cwd = os.getcwd()
-sys.path.append(cwd)
-
-# Set environment variables
-os.environ['PYTHONPATH'] = cwd
-
-# Import Flask application
-from app import app as application 
+# For debugging
+import logging
+logging.basicConfig(filename='passenger.log', level=logging.DEBUG)
+try:
+    logging.debug('Starting application...')
+    application.debug = False
+except Exception as e:
+    logging.error(f'Error starting application: {str(e)}') 
